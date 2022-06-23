@@ -31,4 +31,5 @@ Documentação da API com Swagger:
 
 Endpoints para requisições HTTP:
 > [http://localhost:5229/api/v1/colaboradores](http://localhost:5229/api/v1/colaboradores) - GET / POST
+
 > [http://localhost:5229/api/v1/colaboradores/id](http://localhost:5229/api/v1/colaboradores/id) - GET / PUT / DELETE
