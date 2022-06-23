@@ -160,5 +160,61 @@ namespace Restful_API.Controllers
 
             return Ok(funcionario);
         }
+
+        [HttpDelete]
+        [Route(template: "colaboradores/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteFuncionarioAsync([FromServices] AppDbContext context, [FromRoute] Guid id)
+        {
+            Funcionario? funcionario = await context.FuncionariosCLT.FirstOrDefaultAsync(x => x.Id == id);
+
+            TipoContratoEnum tipo;
+
+            if (funcionario == null)
+            {
+                funcionario = await context.FuncionariosPJ.FirstOrDefaultAsync(x => x.Id == id);
+                tipo = TipoContratoEnum.PJ;
+            }
+            else
+            {
+                tipo = TipoContratoEnum.CLT;
+            }
+
+            if (funcionario == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                if (tipo == TipoContratoEnum.CLT)
+                {
+
+                    context.FuncionariosCLT.Remove((FuncionarioCLT)funcionario);
+
+                }
+                else if (tipo == TipoContratoEnum.PJ)
+                {
+
+                    context.FuncionariosPJ.Remove((FuncionarioPJ)funcionario);
+
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                await context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
     }
 }
