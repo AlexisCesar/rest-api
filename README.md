@@ -14,3 +14,21 @@ Alguns conceitos e padrões foram requisitados na proposta do projeto:
 ▶ SOLID
 ▶ POO - Herança, Polimorfismo e Encapsulamento
 ▶ Design Pattern - Template Method
+
+### Para rodar o projeto
+É necessário estar na pasta raíz da API (\REST-API) e primeiramente preparar o banco de dados com o comando:
+```
+dotnet ef database update
+```
+Em seguida rodar a api com:
+```
+dotnet run
+```
+
+### Endpoints
+Documentação da API com Swagger:
+> [http://localhost:5229/swagger/index.html](http://localhost:5229/swagger/index.html)
+
+Endpoints para requisições HTTP:
+> [http://localhost:5229/api/v1/colaboradores](http://localhost:5229/api/v1/colaboradores) - GET / POST
+> [http://localhost:5229/api/v1/colaboradores/id](http://localhost:5229/api/v1/colaboradores/id) - GET / PUT / DELETE
