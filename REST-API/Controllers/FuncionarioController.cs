@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Entidades.Models;
+using Restful_API.ViewModels;
 
 namespace Restful_API.Controllers
 {
@@ -15,7 +16,7 @@ namespace Restful_API.Controllers
         [HttpGet]
         [Route("colaboradores")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
-        [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult GetFuncionarios()
         {
             var funcionarios = new List<Funcionario>()
@@ -31,5 +32,25 @@ namespace Restful_API.Controllers
             return funcionarios.Count == 0 ? NoContent() : Ok(funcionarios);
         }
 
+        [HttpPost]
+        [Route("colaboradores")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult PostFuncionarios([FromBody] CreateFuncionarioViewModel funcionario)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var funcionarioCriado = new FuncionarioCLT()
+            {
+                Id = Guid.NewGuid(),
+                Nome = funcionario.Nome,
+                Salario = funcionario.Salario,
+            };
+
+            return Created($"api/v1/colaboradores/{funcionarioCriado.Id}", funcionarioCriado);
+        }
     }
 }
