@@ -4,7 +4,7 @@ using Entidades.Models;
 namespace Restful_API.Controllers
 {
     [ApiController]
-    [Route("[controller]/v1")]
+    [Route("api/v1")]
     public class FuncionarioController : ControllerBase
     {
         public FuncionarioController()
@@ -12,7 +12,8 @@ namespace Restful_API.Controllers
 
         }
 
-        [HttpGet(Name = "GetFuncionarios")]
+        [HttpGet]
+        [Route("colaboradores")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
         [ProducesResponseType(StatusCodes.Status204NoContent, Type = typeof(Funcionario))]
         public IActionResult GetFuncionarios()
