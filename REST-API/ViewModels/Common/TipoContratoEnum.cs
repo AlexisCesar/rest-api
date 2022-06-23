@@ -1,5 +1,8 @@
-﻿namespace Restful_API.ViewModels.Common
+﻿using System.Text.Json.Serialization;
+
+namespace Restful_API.ViewModels.Common
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TipoContratoEnum
     {
         CLT = 1,
