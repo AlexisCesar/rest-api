@@ -53,6 +53,7 @@ namespace Restful_API.Controllers
         [Route("colaboradores")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Funcionario))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateFuncionario([FromServices] AppDbContext context, [FromBody] CreateFuncionarioViewModel funcionario)
         {
             if(!ModelState.IsValid)
@@ -98,6 +99,66 @@ namespace Restful_API.Controllers
             }
 
             return Created($"api/v1/colaboradores/{funcionarioCriado.Id}", funcionarioCriado);
+        }
+
+        [HttpPut]
+        [Route(template: "colaboradores/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateFuncionarioAsync([FromServices] AppDbContext context, [FromBody] UpdateFuncionarioViewModel objeto, [FromRoute] Guid id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            Funcionario? funcionario = await context.FuncionariosCLT.FirstOrDefaultAsync(x => x.Id == id);
+
+            TipoContratoEnum tipo;
+
+            if (funcionario == null)
+            {
+                funcionario = await context.FuncionariosPJ.FirstOrDefaultAsync(x => x.Id == id);
+                tipo = TipoContratoEnum.PJ;
+            } else
+            {
+                tipo = TipoContratoEnum.CLT;
+            }
+
+            if(funcionario == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                funcionario.Nome = objeto.Nome;
+                funcionario.Salario = objeto.Salario;
+
+                if(tipo == TipoContratoEnum.CLT)
+                {
+
+                    context.FuncionariosCLT.Update((FuncionarioCLT) funcionario);
+
+                } else if (tipo == TipoContratoEnum.PJ) {
+
+                    context.FuncionariosPJ.Update((FuncionarioPJ) funcionario);
+
+                } else
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                await context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return Ok(funcionario);
         }
     }
 }
