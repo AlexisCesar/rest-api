@@ -1,56 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Entidades.Models;
 using Restful_API.ViewModels;
-using Restful_API.ViewModels.Common;
 using Restful_API.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Restful_API.Controllers
 {
     [ApiController]
-    [Route("api/v1")]
+    [Route("api/v1/colaboradores")]
     public class FuncionarioController : ControllerBase
     {
         [HttpGet]
-        [Route("colaboradores")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Funcionario>))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetFuncionariosAsync([FromServices] AppDbContext context)
         {
-            var funcionariosCLT = await context.FuncionariosCLT.AsNoTracking().ToListAsync();
-            var funcionariosPJ = await context.FuncionariosPJ.AsNoTracking().ToListAsync();
-
-            var funcionarios = new List<Funcionario>();
-
-            funcionariosCLT.ForEach(x => {
-                funcionarios.Add(x);
-            });
-
-            funcionariosPJ.ForEach(x => {
-                funcionarios.Add(x);
-            });
+            var funcionarios = await context.Funcionarios.AsNoTracking().ToListAsync();
 
             return funcionarios.Count == 0 ? NoContent() : Ok(funcionarios);
         }
 
         [HttpGet]
-        [Route(template:"colaboradores/{id}")]
+        [Route(template:"{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetFuncionarioByIdAsync([FromServices] AppDbContext context, [FromRoute] Guid id)
         {
-            Funcionario? funcionario = await context.FuncionariosCLT.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-
-            if(funcionario == null)
-            {
-                funcionario = await context.FuncionariosPJ.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-            }
+            Funcionario? funcionario = await context.Funcionarios.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
             return funcionario == null ? NotFound() : Ok(funcionario);
         }
 
         [HttpPost]
-        [Route("colaboradores")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Funcionario))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -61,34 +42,14 @@ namespace Restful_API.Controllers
                 return BadRequest();
             }
 
-            Funcionario funcionarioCriado;
-
-            if(funcionario.TipoContrato == TipoContratoEnum.CLT)
+            Funcionario funcionarioCriado = new Funcionario()
             {
-                funcionarioCriado = new FuncionarioCLT()
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = funcionario.Nome,
-                    Salario = funcionario.Salario,
-                };
+                Id = Guid.NewGuid(),
+                Nome = funcionario.Nome,
+                Email = funcionario.Email
+            };
 
-                await context.FuncionariosCLT.AddAsync((FuncionarioCLT) funcionarioCriado);
-
-            } else if (funcionario.TipoContrato == TipoContratoEnum.PJ)
-            {
-                funcionarioCriado = new FuncionarioPJ()
-                {
-                    Id = Guid.NewGuid(),
-                    Nome = funcionario.Nome,
-                    Salario = funcionario.Salario,
-                };
-
-                await context.FuncionariosPJ.AddAsync((FuncionarioPJ)funcionarioCriado);
-
-            } else
-            {
-                return BadRequest();
-            }
+            await context.Funcionarios.AddAsync(funcionarioCriado);
 
             try
             {
@@ -102,7 +63,7 @@ namespace Restful_API.Controllers
         }
 
         [HttpPut]
-        [Route(template: "colaboradores/{id}")]
+        [Route(template: "{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -114,18 +75,7 @@ namespace Restful_API.Controllers
                 return BadRequest();
             }
 
-            Funcionario? funcionario = await context.FuncionariosCLT.FirstOrDefaultAsync(x => x.Id == id);
-
-            TipoContratoEnum tipo;
-
-            if (funcionario == null)
-            {
-                funcionario = await context.FuncionariosPJ.FirstOrDefaultAsync(x => x.Id == id);
-                tipo = TipoContratoEnum.PJ;
-            } else
-            {
-                tipo = TipoContratoEnum.CLT;
-            }
+            Funcionario? funcionario = await context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
 
             if(funcionario == null)
             {
@@ -135,21 +85,9 @@ namespace Restful_API.Controllers
             try
             {
                 funcionario.Nome = objeto.Nome;
-                funcionario.Salario = objeto.Salario;
+                funcionario.Email = objeto.Email;
 
-                if(tipo == TipoContratoEnum.CLT)
-                {
-
-                    context.FuncionariosCLT.Update((FuncionarioCLT) funcionario);
-
-                } else if (tipo == TipoContratoEnum.PJ) {
-
-                    context.FuncionariosPJ.Update((FuncionarioPJ) funcionario);
-
-                } else
-                {
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
+                context.Funcionarios.Update(funcionario);
 
                 await context.SaveChangesAsync();
             }
@@ -162,26 +100,14 @@ namespace Restful_API.Controllers
         }
 
         [HttpDelete]
-        [Route(template: "colaboradores/{id}")]
+        [Route(template: "{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteFuncionarioAsync([FromServices] AppDbContext context, [FromRoute] Guid id)
         {
-            Funcionario? funcionario = await context.FuncionariosCLT.FirstOrDefaultAsync(x => x.Id == id);
-
-            TipoContratoEnum tipo;
-
-            if (funcionario == null)
-            {
-                funcionario = await context.FuncionariosPJ.FirstOrDefaultAsync(x => x.Id == id);
-                tipo = TipoContratoEnum.PJ;
-            }
-            else
-            {
-                tipo = TipoContratoEnum.CLT;
-            }
+            Funcionario? funcionario = await context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
 
             if (funcionario == null)
             {
@@ -190,22 +116,7 @@ namespace Restful_API.Controllers
 
             try
             {
-                if (tipo == TipoContratoEnum.CLT)
-                {
-
-                    context.FuncionariosCLT.Remove((FuncionarioCLT)funcionario);
-
-                }
-                else if (tipo == TipoContratoEnum.PJ)
-                {
-
-                    context.FuncionariosPJ.Remove((FuncionarioPJ)funcionario);
-
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
+                context.Funcionarios.Remove(funcionario);
 
                 await context.SaveChangesAsync();
             }

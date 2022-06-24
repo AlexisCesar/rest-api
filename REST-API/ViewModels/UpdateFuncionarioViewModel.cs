@@ -8,6 +8,6 @@ namespace Restful_API.ViewModels
         [Required]
         public string Nome { get; set; }
         [Required]
-        public double Salario { get; set; }
+        public string Email { get; set; }
     }
 }

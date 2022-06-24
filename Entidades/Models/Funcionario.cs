@@ -1,11 +1,13 @@
 ﻿namespace Entidades.Models
 {
-    public abstract class Funcionario
+    public class Funcionario
     {
+        public Funcionario()
+        {
+
+        }
         public Guid Id { get; set; }
         public string? Nome { get; set; }
-        public double Salario { get; set; }
-
-        public abstract double CalcularSalario();
+        public string? Email { get; set; }
     }
 }
