@@ -34,6 +34,8 @@ Endpoints para requisições HTTP:
 
 > [http://localhost:5229/api/v1/colaboradores/id](http://localhost:5229/api/v1/colaboradores/id) - GET / PUT / DELETE
 
+> [http://localhost:5229/api/v1/colaboradores/id/contratos](http://localhost:5229/api/v1/colaboradores/id/contratos) - GET
+
 > [http://localhost:5229/api/v1/contratos](http://localhost:5229/api/v1/contratos) - GET / POST
 
 > [http://localhost:5229/api/v1/contratos/id](http://localhost:5229/api/v1/contratos/id) - GET / PUT
