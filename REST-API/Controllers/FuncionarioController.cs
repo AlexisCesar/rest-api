@@ -127,5 +127,29 @@ namespace Restful_API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet]
+        [Route(template: "{id}/contratos")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Contrato>))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetContratosFuncionarioByIdAsync([FromServices] AppDbContext context, [FromRoute] Guid id)
+        {
+            Funcionario? funcionario = await context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (funcionario == null)
+            {
+                return NotFound();
+            }
+
+            var contratosCLT = await context.ContratosCLT.AsNoTracking().Where(x => x.Funcionario.Id == id).ToListAsync();
+            var contratosPJ = await context.ContratosPJ.AsNoTracking().Where(x => x.Funcionario.Id == id).ToListAsync();
+            var contratos = new List<Contrato>();
+
+            contratosCLT.ForEach(x => contratos.Add(x));
+            contratosPJ.ForEach(x => contratos.Add(x));
+
+            return contratos.Count == 0 ? NoContent() : Ok(contratos);
+        }
     }
 }
