@@ -16,8 +16,8 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetContratos([FromServices] AppDbContext context)
         {
-            var contratosCLT = await context.ContratosCLT.AsNoTracking().ToListAsync();
-            var contratosPJ = await context.ContratosPJ.AsNoTracking().ToListAsync();
+            var contratosCLT = await context.ContratosCLT.Include(nameof(Contrato.Funcionario)).AsNoTracking().ToListAsync();
+            var contratosPJ = await context.ContratosPJ.Include(nameof(Contrato.Funcionario)).AsNoTracking().ToListAsync();
             var contratos = new List<Contrato>();
 
             contratosCLT.ForEach(x => contratos.Add(x));
@@ -32,11 +32,11 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetContratoById([FromServices] AppDbContext context, [FromRoute] Guid id)
         {
-            Contrato? contrato = await context.ContratosCLT.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            Contrato? contrato = await context.ContratosCLT.Include(nameof(Contrato.Funcionario)).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
             if (contrato == null)
             {
-                contrato = await context.ContratosCLT.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                contrato = await context.ContratosPJ.Include(nameof(Contrato.Funcionario)).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             }
 
             return contrato == null ? NotFound() : Ok(contrato);
@@ -115,11 +115,11 @@ namespace Restful_API.Controllers
                 return BadRequest();
             }
 
-            Contrato? contrato = await context.ContratosCLT.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            Contrato? contrato = await context.ContratosCLT.Include(nameof(Contrato.Funcionario)).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
             if (contrato == null)
             {
-                contrato = await context.ContratosCLT.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                contrato = await context.ContratosPJ.Include(nameof(Contrato.Funcionario)).AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             }
 
             if (contrato == null)
