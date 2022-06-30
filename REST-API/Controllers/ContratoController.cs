@@ -172,7 +172,7 @@ namespace Restful_API.Controllers
         }
 
         [HttpPost]
-        [Route("/cancelar/{id}")]
+        [Route("cancelar/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contrato))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
