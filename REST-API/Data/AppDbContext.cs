@@ -5,9 +5,9 @@ namespace Restful_API.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Funcionario> Funcionarios { get; set; }
-        public DbSet<ContratoCLT> ContratosCLT { get; set; }
-        public DbSet<ContratoPJ> ContratosPJ { get; set; }
+        public DbSet<Funcionario> Funcionarios { get; set; } = null!;
+        public DbSet<ContratoCLT> ContratosCLT { get; set; } = null!;
+        public DbSet<ContratoPJ> ContratosPJ { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
             => optionsBuilder.UseSqlite(connectionString: "DataSource=app.db;Cache=Shared");

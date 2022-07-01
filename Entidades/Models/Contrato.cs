@@ -24,7 +24,7 @@ namespace Entidades.Models
         }
         public double Salario { get; set; }
         public string? Cargo { get; set; }
-        public Funcionario Funcionario { get; set; }
+        public Funcionario Funcionario { get; set; } = null!;
 
         public abstract double calcularSalario();
     }

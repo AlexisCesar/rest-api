@@ -54,7 +54,7 @@ namespace Restful_API.Controllers
             try
             {
                 await context.SaveChangesAsync();
-            } catch (Exception e)
+            } catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -91,7 +91,7 @@ namespace Restful_API.Controllers
 
                 await context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
@@ -120,7 +120,7 @@ namespace Restful_API.Controllers
 
                 await context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
