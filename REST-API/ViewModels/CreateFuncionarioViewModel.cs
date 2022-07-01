@@ -6,8 +6,8 @@ namespace Restful_API.ViewModels
     public class CreateFuncionarioViewModel
     {
         [Required]
-        public string Nome { get; set; }
+        public string Nome { get; set; } = null!;
         [Required]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
     }
 }
