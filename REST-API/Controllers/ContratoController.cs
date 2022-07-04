@@ -20,8 +20,8 @@ namespace Restful_API.Controllers
             var contratosPJ = await context.ContratosPJ.Include(nameof(Contrato.Funcionario)).AsNoTracking().ToListAsync();
             var contratos = new List<Contrato>();
 
-            contratosCLT.ForEach(x => contratos.Add(x));
-            contratosPJ.ForEach(x => contratos.Add(x));
+            contratos.AddRange(contratosCLT);
+            contratos.AddRange(contratosPJ);
 
             return contratos.Count == 0 ? NoContent() : Ok(contratos);
         }
