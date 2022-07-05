@@ -11,6 +11,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>();
 
+// Configure DI
+builder.Services.AddScoped<IContratoCLTRepository, ContratoCLTRepository>();
+builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

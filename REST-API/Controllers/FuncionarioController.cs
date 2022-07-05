@@ -10,23 +10,29 @@ namespace Restful_API.Controllers
     [Route("api/v1/colaboradores")]
     public class FuncionarioController : ControllerBase
     {
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Funcionario>))]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> GetFuncionariosAsync([FromServices] AppDbContext context)
+        private readonly IFuncionarioRepository _funcionarioRepository;
+        public FuncionarioController(IFuncionarioRepository funcionarioRepository)
         {
-            var funcionarios = await context.Funcionarios.AsNoTracking().ToListAsync();
+            _funcionarioRepository = funcionarioRepository;
+        }
 
-            return funcionarios.Count == 0 ? NoContent() : Ok(funcionarios);
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<FuncionarioViewModel>))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> GetFuncionariosAsync()
+        {
+            var funcionarios = await _funcionarioRepository.GetFuncionariosAsync();
+
+            return funcionarios.Count() == 0 ? NoContent() : Ok(funcionarios);
         }
 
         [HttpGet]
         [Route(template:"{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FuncionarioViewModel))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetFuncionarioByIdAsync([FromServices] AppDbContext context, [FromRoute] Guid id)
+        public async Task<IActionResult> GetFuncionarioByIdAsync([FromRoute] Guid id)
         {
-            Funcionario? funcionario = await context.Funcionarios.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            Funcionario? funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
 
             return funcionario == null ? NotFound() : Ok(funcionario);
         }
@@ -35,90 +41,78 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Funcionario))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateFuncionario([FromServices] AppDbContext context, [FromBody] CreateFuncionarioViewModel funcionario)
+        public async Task<IActionResult> CreateFuncionario([FromBody] CreateFuncionarioViewModel funcionario)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+            if(!ModelState.IsValid) return BadRequest();
 
-            Funcionario funcionarioCriado = new Funcionario()
+            Funcionario funcionarioToInsert = new Funcionario()
             {
                 Id = Guid.NewGuid(),
                 Nome = funcionario.Nome,
                 Email = funcionario.Email
             };
 
-            await context.Funcionarios.AddAsync(funcionarioCriado);
+            await _funcionarioRepository.InsertFuncionarioAsync(funcionarioToInsert);
 
             try
             {
-                await context.SaveChangesAsync();
+                await _funcionarioRepository.SaveAsync();
             } catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return Created($"api/v1/colaboradores/{funcionarioCriado.Id}", funcionarioCriado);
+            return Created($"api/v1/colaboradores/{funcionarioToInsert.Id}", funcionarioToInsert);
         }
 
         [HttpPut]
         [Route(template: "{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FuncionarioViewModel))]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateFuncionarioAsync([FromServices] AppDbContext context, [FromBody] UpdateFuncionarioViewModel objeto, [FromRoute] Guid id)
+        public async Task<IActionResult> UpdateFuncionarioAsync([FromBody] UpdateFuncionarioViewModel objeto, [FromRoute] Guid id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid) return BadRequest();
 
-            Funcionario? funcionario = await context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
+            var funcionarioToUpdate = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
 
-            if(funcionario == null)
-            {
-                return NotFound();
-            }
+            if(funcionarioToUpdate == null) return NotFound();
+            
+            funcionarioToUpdate.Nome = objeto.Nome;
+            funcionarioToUpdate.Email = objeto.Email;
+
+            _funcionarioRepository.UpdateFuncionario(funcionarioToUpdate);
 
             try
             {
-                funcionario.Nome = objeto.Nome;
-                funcionario.Email = objeto.Email;
-
-                context.Funcionarios.Update(funcionario);
-
-                await context.SaveChangesAsync();
+                await _funcionarioRepository.SaveAsync();
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return Ok(funcionario);
+            return Ok(funcionarioToUpdate);
         }
 
         [HttpDelete]
         [Route(template: "{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Funcionario))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FuncionarioViewModel))]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteFuncionarioAsync([FromServices] AppDbContext context, [FromRoute] Guid id)
+        public async Task<IActionResult> DeleteFuncionarioAsync([FromRoute] Guid id)
         {
-            Funcionario? funcionario = await context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
+            var funcionarioToDelete = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
 
-            if (funcionario == null)
-            {
-                return NotFound();
-            }
+            if (funcionarioToDelete == null) return NotFound();
+
+            await _funcionarioRepository.DeleteFuncionario(id);
 
             try
             {
-                context.Funcionarios.Remove(funcionario);
-
-                await context.SaveChangesAsync();
+                await _funcionarioRepository.SaveAsync();
             }
             catch (Exception)
             {
@@ -129,27 +123,23 @@ namespace Restful_API.Controllers
         }
 
         [HttpGet]
-        [Route(template: "{id}/contratos")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Contrato>))]
+        [Route(template: "{id}/contratosCLT")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ContratoCLTViewModel>))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetContratosFuncionarioByIdAsync([FromServices] AppDbContext context, [FromRoute] Guid id)
+        public async Task<IActionResult> GetContratosCLTFuncionarioByIdAsync([FromRoute] Guid id)
         {
-            Funcionario? funcionario = await context.Funcionarios.FirstOrDefaultAsync(x => x.Id == id);
+            return Ok();
+        }
 
-            if (funcionario == null)
-            {
-                return NotFound();
-            }
-
-            var contratosCLT = await context.ContratosCLT.AsNoTracking().Where(x => x.Funcionario.Id == id).ToListAsync();
-            var contratosPJ = await context.ContratosPJ.AsNoTracking().Where(x => x.Funcionario.Id == id).ToListAsync();
-            var contratos = new List<Contrato>();
-
-            contratosCLT.ForEach(x => contratos.Add(x));
-            contratosPJ.ForEach(x => contratos.Add(x));
-
-            return contratos.Count == 0 ? NoContent() : Ok(contratos);
+        [HttpGet]
+        [Route(template: "{id}/contratosPJ")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ContratoPJViewModel>))]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetContratosPJFuncionarioByIdAsync([FromRoute] Guid id)
+        {
+            return Ok();
         }
     }
 }
