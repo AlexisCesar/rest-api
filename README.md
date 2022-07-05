@@ -34,10 +34,18 @@ Endpoints para requisições HTTP:
 
 > [http://localhost:5229/api/v1/colaboradores/id](http://localhost:5229/api/v1/colaboradores/id) - GET / PUT / DELETE
 
-> [http://localhost:5229/api/v1/colaboradores/id/contratos](http://localhost:5229/api/v1/colaboradores/id/contratos) - GET
+> [http://localhost:5229/api/v1/colaboradores/id/contratosCLT](http://localhost:5229/api/v1/colaboradores/id/contratosCLT) - GET
 
-> [http://localhost:5229/api/v1/contratos](http://localhost:5229/api/v1/contratos) - GET / POST
+> [http://localhost:5229/api/v1/colaboradores/id/contratosPJ](http://localhost:5229/api/v1/colaboradores/id/contratosPJ) - GET
 
-> [http://localhost:5229/api/v1/contratos/id](http://localhost:5229/api/v1/contratos/id) - GET / PUT
+> [http://localhost:5229/api/v1/contratosCLT](http://localhost:5229/api/v1/contratosCLT) - GET / POST
 
-> [http://localhost:5229/api/v1/contratos/cancelar/id](http://localhost:5229/api/v1/contratos/cancelar/id) - POST
+> [http://localhost:5229/api/v1/contratosCLT/id](http://localhost:5229/api/v1/contratosCLT/id) - GET / PUT
+
+> [http://localhost:5229/api/v1/contratosCLT/cancelar/id](http://localhost:5229/api/v1/contratosCLT/cancelar/id) - POST
+
+> [http://localhost:5229/api/v1/contratosPJ](http://localhost:5229/api/v1/contratosPJ) - GET / POST
+
+> [http://localhost:5229/api/v1/contratosPJ/id](http://localhost:5229/api/v1/contratosPJ/id) - GET / PUT
+
+> [http://localhost:5229/api/v1/contratosPJ/cancelar/id](http://localhost:5229/api/v1/contratosPJ/cancelar/id) - POST
