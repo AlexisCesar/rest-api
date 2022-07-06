@@ -6,9 +6,17 @@
         {
 
         }
-        public override double calcularSalario()
+
+        public override double calcularBeneficiosSalario(double salarioBruto)
         {
-            throw new NotImplementedException();
+            // Calculo falso apenas para demonstração.
+            return 0;
+        }
+
+        public override double calcularDescontosSalario(double salarioBruto)
+        {
+            // Calculo falso apenas para demonstração.
+            return salarioBruto * 0.0466;
         }
     }
 }
