@@ -13,7 +13,9 @@ builder.Services.AddDbContext<AppDbContext>();
 
 // Configure DI
 builder.Services.AddScoped<IContratoCLTRepository, ContratoCLTRepository>();
+builder.Services.AddScoped<IContratoPJRepository, ContratoPJRepository>();
 builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+builder.Services.AddScoped<IFuncionarioContratoRepository, FuncionarioContratoRepository>();
 
 var app = builder.Build();
 

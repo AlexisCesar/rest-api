@@ -2,7 +2,6 @@
 using Entidades.Models;
 using Restful_API.ViewModels;
 using Restful_API.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Restful_API.Controllers
 {
@@ -11,9 +10,14 @@ namespace Restful_API.Controllers
     public class FuncionarioController : ControllerBase
     {
         private readonly IFuncionarioRepository _funcionarioRepository;
-        public FuncionarioController(IFuncionarioRepository funcionarioRepository)
+        private readonly IFuncionarioContratoRepository _funcionarioContratoRepository;
+        public FuncionarioController(
+            IFuncionarioRepository funcionarioRepository,
+            IFuncionarioContratoRepository funcionarioContratoRepository
+            )
         {
             _funcionarioRepository = funcionarioRepository;
+            _funcionarioContratoRepository = funcionarioContratoRepository;
         }
 
         [HttpGet]
@@ -129,7 +133,13 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetContratosCLTFuncionarioByIdAsync([FromRoute] Guid id)
         {
-            return Ok();
+            Funcionario? funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
+
+            if(funcionario == null) return NotFound();
+
+            var contratosCLT = await _funcionarioContratoRepository.GetContratosCLTAsync(id);
+
+            return contratosCLT.Count() == 0 ? NoContent() : Ok(contratosCLT);
         }
 
         [HttpGet]
@@ -139,7 +149,13 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetContratosPJFuncionarioByIdAsync([FromRoute] Guid id)
         {
-            return Ok();
+            Funcionario? funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
+
+            if(funcionario == null) return NotFound();
+            
+            var contratosPJ = await _funcionarioContratoRepository.GetContratosPJAsync(id);
+
+            return contratosPJ.Count() == 0 ? NoContent() : Ok(contratosPJ);
         }
     }
 }
