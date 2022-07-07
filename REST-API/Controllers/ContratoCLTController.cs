@@ -1,7 +1,7 @@
 ﻿using Entidades.Models;
 using Microsoft.AspNetCore.Mvc;
 using Restful_API.Data;
-using Restful_API.ViewModels;
+using Restful_API.DTOs;
 
 namespace Restful_API.Controllers
 {
@@ -22,7 +22,7 @@ namespace Restful_API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ContratoCLTViewModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ContratoCLTDTO>))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetContratos()
         {
@@ -32,7 +32,7 @@ namespace Restful_API.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContratoCLTViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContratoCLTDTO))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetContratoById([FromRoute] Guid id)
         {
@@ -42,11 +42,11 @@ namespace Restful_API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ContratoCLTViewModel))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ContratoCLTDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateContrato([FromBody] CreateContratoCLTViewModel objeto)
+        public async Task<IActionResult> CreateContrato([FromBody] CreateContratoCLTRequest objeto)
         {
             if(!ModelState.IsValid) return BadRequest();
 
@@ -76,11 +76,11 @@ namespace Restful_API.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContratoCLTViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContratoCLTDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateContrato([FromRoute] Guid id, [FromBody] UpdateContratoCLTViewModel objeto)
+        public async Task<IActionResult> UpdateContrato([FromRoute] Guid id, [FromBody] UpdateContratoCLTRequest objeto)
         {
             if(!ModelState.IsValid) return BadRequest();
 
@@ -104,7 +104,7 @@ namespace Restful_API.Controllers
         }
 
         [HttpPut("cancelar/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContratoCLTViewModel))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContratoCLTDTO))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

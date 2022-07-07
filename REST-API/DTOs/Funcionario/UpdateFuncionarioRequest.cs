@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Restful_API.ViewModels
+namespace Restful_API.DTOs
 {
-    public class CreateFuncionarioViewModel
+    public class UpdateFuncionarioRequest
     {
         [Required]
         public string Nome { get; set; } = null!;

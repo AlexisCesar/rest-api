@@ -1,4 +1,8 @@
+using AutoMapper;
 using Restful_API.Data;
+using Restful_API.Mappings;
+using Restful_API.Services.Interfaces;
+using Restful_API.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +20,15 @@ builder.Services.AddScoped<IContratoCLTRepository, ContratoCLTRepository>();
 builder.Services.AddScoped<IContratoPJRepository, ContratoPJRepository>();
 builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
 builder.Services.AddScoped<IFuncionarioContratoRepository, FuncionarioContratoRepository>();
+
+builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
+
+// Mapper
+var mappingConfig = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
+
+IMapper mapper = mappingConfig.CreateMapper();
+
+builder.Services.AddSingleton(mapper);
 
 var app = builder.Build();
 
