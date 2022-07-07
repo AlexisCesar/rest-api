@@ -46,7 +46,7 @@ namespace Restful_API.Migrations
 
                     b.HasIndex("FuncionarioId");
 
-                    b.ToTable("Contrato");
+                    b.ToTable("Contratos");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Contrato");
                 });

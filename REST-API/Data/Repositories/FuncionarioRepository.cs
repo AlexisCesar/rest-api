@@ -29,7 +29,7 @@ namespace Restful_API.Data
 
         public async Task<Funcionario> GetFuncionarioByIdAsync(Guid funcionarioId)
         {
-            return await _context.Funcionarios.FirstOrDefaultAsync(x => x.Id == funcionarioId);
+            return await _context.Funcionarios.AsNoTracking().FirstOrDefaultAsync(x => x.Id == funcionarioId);
         }
 
         public async Task<IEnumerable<Funcionario>> GetFuncionariosAsync()

@@ -12,5 +12,18 @@ namespace Testes.Entidades
 
             Assert.NotNull(contrato);
         }
+
+        [Theory]
+        [InlineData(100)]
+        [InlineData(10)]
+        [InlineData(20534)]
+        [InlineData(6000)]
+        public void Calcula_Beneficio_Corretamente(double salarioBruto)
+        {
+            var contrato = new ContratoCLT();
+            var beneficioEsperado = salarioBruto * 0.275;
+
+            Assert.Equal(beneficioEsperado, contrato.calcularBeneficiosSalario(salarioBruto));
+        }
     }
 }
