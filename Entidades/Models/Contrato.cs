@@ -22,18 +22,27 @@ namespace Entidades.Models
                 _termino = value;
             }
         }
-        private double _salario { get; set; }
-        public double Salario { get => calcularSalario(_salario); set { _salario = value; } }
+        public decimal SalarioLiquido { get; private set; }
+        private decimal _salarioBruto { get; set; }
+        public decimal SalarioBruto
+        {
+            get => _salarioBruto;
+            set
+            {
+                _salarioBruto = value;
+                SalarioLiquido = calcularSalarioLiquido(value);
+            }
+        }
         public string? Cargo { get; set; }
         public Funcionario Funcionario { get; set; } = null!;
 
-        public double calcularSalario(double salarioBruto)
+        public decimal calcularSalarioLiquido(decimal salarioBruto)
         {
             return salarioBruto - calcularDescontosSalario(salarioBruto) + calcularBeneficiosSalario(salarioBruto);
         }
 
-        public abstract double calcularDescontosSalario(double salarioBruto);
+        public abstract decimal calcularDescontosSalario(decimal salarioBruto);
 
-        public abstract double calcularBeneficiosSalario(double salarioBruto);
+        public abstract decimal calcularBeneficiosSalario(decimal salarioBruto);
     }
 }

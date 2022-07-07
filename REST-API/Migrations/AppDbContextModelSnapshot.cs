@@ -36,8 +36,11 @@ namespace Restful_API.Migrations
                     b.Property<DateTime>("Inicio")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("Salario")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("SalarioBruto")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("SalarioLiquido")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Termino")
                         .HasColumnType("TEXT");
@@ -46,7 +49,7 @@ namespace Restful_API.Migrations
 
                     b.HasIndex("FuncionarioId");
 
-                    b.ToTable("Contratos");
+                    b.ToTable("Contrato");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Contrato");
                 });

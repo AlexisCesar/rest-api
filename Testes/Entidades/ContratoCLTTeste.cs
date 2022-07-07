@@ -18,10 +18,10 @@ namespace Testes.Entidades
         [InlineData(10)]
         [InlineData(20534)]
         [InlineData(6000)]
-        public void Calcula_Beneficio_Corretamente(double salarioBruto)
+        public void Calcula_Beneficio_Corretamente(decimal salarioBruto)
         {
             var contrato = new ContratoCLT();
-            var beneficioEsperado = salarioBruto * 0.275;
+            var beneficioEsperado = salarioBruto * (decimal) 0.275;
 
             Assert.Equal(beneficioEsperado, contrato.calcularBeneficiosSalario(salarioBruto));
         }
