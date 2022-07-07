@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Restful_API.ViewModels
+namespace Restful_API.DTOs
 {
-    public class CreateContratoCLTViewModel
+    public class CreateContratoPJRequest
     {
         [Required]
         public string? Cargo { get; set; }

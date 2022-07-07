@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Restful_API.ViewModels
+namespace Restful_API.DTOs
 {
-    public class UpdateContratoPJViewModel
+    public class UpdateContratoPJRequest
     {
         [Required]
         public string? Cargo { get; set; }

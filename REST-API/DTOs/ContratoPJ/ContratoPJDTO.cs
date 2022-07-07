@@ -1,12 +1,12 @@
-namespace Restful_API.ViewModels 
+namespace Restful_API.DTOs 
 {
-    public class ContratoCLTViewModel 
+    public class ContratoPJDTO 
     {
         public Guid Id { get; set; }
         public DateTime Inicio { get; set; }
         public DateTime? Termino { get; set; }
         public double Salario { get; set; }
         public string? Cargo { get; set; }
-        public FuncionarioViewModel Funcionario { get; set; } = null!;
+        public FuncionarioDTO Funcionario { get; set; } = null!;
     }
 }

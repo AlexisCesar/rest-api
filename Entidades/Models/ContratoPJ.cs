@@ -2,7 +2,7 @@
 {
     public class ContratoPJ : Contrato
     {
-        public ContratoPJ() : base()
+        public ContratoPJ()
         {
 
         }
