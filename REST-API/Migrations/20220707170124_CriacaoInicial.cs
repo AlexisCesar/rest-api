@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Restful_API.Migrations
 {
-    public partial class InitialCreation : Migration
+    public partial class CriacaoInicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,7 +29,8 @@ namespace Restful_API.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Inicio = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Termino = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Salario = table.Column<double>(type: "REAL", nullable: false),
+                    SalarioLiquido = table.Column<decimal>(type: "TEXT", nullable: false),
+                    SalarioBruto = table.Column<decimal>(type: "TEXT", nullable: false),
                     Cargo = table.Column<string>(type: "TEXT", nullable: true),
                     FuncionarioId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false)

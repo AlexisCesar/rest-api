@@ -11,8 +11,8 @@ using Restful_API.Data;
 namespace Restful_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220624145658_InitialCreation")]
-    partial class InitialCreation
+    [Migration("20220707170124_CriacaoInicial")]
+    partial class CriacaoInicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,8 +38,11 @@ namespace Restful_API.Migrations
                     b.Property<DateTime>("Inicio")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("Salario")
-                        .HasColumnType("REAL");
+                    b.Property<decimal>("SalarioBruto")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("SalarioLiquido")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Termino")
                         .HasColumnType("TEXT");

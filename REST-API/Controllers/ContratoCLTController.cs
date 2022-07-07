@@ -1,7 +1,7 @@
-﻿using Entidades.Models;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Restful_API.Data;
 using Restful_API.DTOs;
+using Restful_API.Services.Interfaces;
 
 namespace Restful_API.Controllers
 {
@@ -9,16 +9,12 @@ namespace Restful_API.Controllers
     [Route("api/v1/contratosCLT")]
     public class ContratoCLTController : ControllerBase
     {
-        private readonly IContratoCLTRepository _contratoRepository;
-        private readonly IFuncionarioRepository _funcionarioRepository;
-
-        public ContratoCLTController(
-            IContratoCLTRepository contratoRepository, 
-            IFuncionarioRepository funcionarioRepository
-        )
+        private readonly IContratoCLTService _contratoService;
+        private readonly IMapper _mapper;
+        public ContratoCLTController(IContratoCLTService contratoService, IMapper mapper)
         {
-            _contratoRepository = contratoRepository;
-            _funcionarioRepository = funcionarioRepository;
+            _contratoService = contratoService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -26,7 +22,7 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> GetContratos()
         {
-            var contratosCLT = await _contratoRepository.GetContratosAsync();
+            var contratosCLT = await _contratoService.GetAllAsync();
 
             return contratosCLT.Count() == 0 ? NoContent() : Ok(contratosCLT);
         }
@@ -36,7 +32,7 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetContratoById([FromRoute] Guid id)
         {
-            var contrato = await _contratoRepository.GetContratoByIdAsync(id);
+            var contrato = await _contratoService.GetByIdAsync(id);
 
             return contrato == null ? NotFound() : Ok(contrato);
         }
@@ -48,31 +44,17 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateContrato([FromBody] CreateContratoCLTRequest objeto)
         {
-            if(!ModelState.IsValid) return BadRequest();
-
-            var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(objeto.FuncionarioId);
-
-            if(funcionario == null) return NotFound();
-
-            var contratoToInsert = new ContratoCLT()
-                {
-                    Id = Guid.NewGuid(),
-                    Inicio = DateTime.UtcNow,
-                    Cargo = objeto.Cargo,
-                    Salario = objeto.Salario,
-                    Funcionario = funcionario
-                };
-            
-            await _contratoRepository.InsertContratoAsync(contratoToInsert);
-
-            try {
-                await _contratoRepository.SaveAsync();
-            } catch (Exception e) {
+            try
+            {
+                var response = await _contratoService.InsertAsync(objeto);
+                return Created($"api/v1/contratosCLT/{response.Id}", response);
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine(e);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return Created($"api/v1/contratosCLT/{contratoToInsert.Id}", contratoToInsert);
         }
 
         [HttpPut("{id}")]
@@ -82,25 +64,17 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateContrato([FromRoute] Guid id, [FromBody] UpdateContratoCLTRequest objeto)
         {
-            if(!ModelState.IsValid) return BadRequest();
+            if (await _contratoService.GetByIdAsync(id) == null) return NotFound();
 
-            var contratoToUpdate = await _contratoRepository.GetContratoByIdAsync(id);
-
-            if (contratoToUpdate == null) return NotFound();
-
-            contratoToUpdate.Cargo = objeto.Cargo;
-            contratoToUpdate.Salario = objeto.Salario;
-
-            _contratoRepository.UpdateContrato(contratoToUpdate);
-
-            try {
-                await _contratoRepository.SaveAsync();
-            } catch (Exception e) {
-                Console.WriteLine(e);
+            try
+            {
+                var response = await _contratoService.UpdateAsync(objeto, id);
+                return Ok(response);
+            }
+            catch (Exception)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return Ok(contratoToUpdate);
         }
 
         [HttpPut("cancelar/{id}")]
@@ -111,24 +85,25 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> CancelContrato([FromRoute] Guid id)
         {
-            if(!ModelState.IsValid) return BadRequest();
-
-            var contratoToUpdate = await _contratoRepository.GetContratoByIdAsync(id);
+            var contratoToUpdate = await _contratoService.GetByIdAsync(id);
 
             if (contratoToUpdate == null) return NotFound();
 
             if (contratoToUpdate.Termino != null) return StatusCode(StatusCodes.Status409Conflict);
 
             contratoToUpdate.Termino = DateTime.UtcNow;
-            
-            try {
-                await _contratoRepository.SaveAsync();
-            } catch (Exception e) {
-                Console.WriteLine(e);
+
+            var contratoToUpdateRequest = _mapper.Map<UpdateContratoCLTRequest>(contratoToUpdate);
+
+            try
+            {
+                var response = await _contratoService.UpdateAsync(contratoToUpdateRequest, id);
+                return Ok(response);
+            }
+            catch (Exception)
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return Ok(contratoToUpdate);
         }
     }
 }
