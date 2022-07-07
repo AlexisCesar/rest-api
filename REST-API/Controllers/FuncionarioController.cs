@@ -41,17 +41,14 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateFuncionario([FromBody] CreateFuncionarioRequest funcionario)
         {
-            FuncionarioDTO insertedFuncionario;
-
             try
             {
-                insertedFuncionario = await _funcionarioService.InsertAsync(funcionario);
+                var insertedFuncionario = await _funcionarioService.InsertAsync(funcionario);
+                return Created($"api/v1/colaboradores/{insertedFuncionario.Id}", insertedFuncionario);
             } catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return Created($"api/v1/colaboradores/{insertedFuncionario.Id}", insertedFuncionario);
         }
 
         [HttpPut]
@@ -64,18 +61,15 @@ namespace Restful_API.Controllers
         {
             if(await _funcionarioService.GetByIdAsync(id) == null) return NotFound();
 
-            FuncionarioDTO updatedFuncionario;
-
             try
             {
-                updatedFuncionario = await _funcionarioService.UpdateAsync(objeto, id);
+                var updatedFuncionario = await _funcionarioService.UpdateAsync(objeto, id);
+                return Ok(updatedFuncionario);
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
-            return Ok(updatedFuncionario);
         }
 
         [HttpDelete]

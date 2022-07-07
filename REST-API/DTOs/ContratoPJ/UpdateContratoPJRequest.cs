@@ -7,6 +7,6 @@ namespace Restful_API.DTOs
         [Required]
         public string? Cargo { get; set; }
         [Required]
-        public double Salario { get; set; }
+        public decimal SalarioBruto { get; set; }
     }
 }

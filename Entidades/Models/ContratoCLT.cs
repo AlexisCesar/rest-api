@@ -7,16 +7,16 @@
 
         }
 
-        public override double calcularBeneficiosSalario(double salarioBruto)
+        public override decimal calcularBeneficiosSalario(decimal salarioBruto)
         {
             // Calculo falso apenas para demonstração.
-            return salarioBruto * 0.275;
+            return salarioBruto * (decimal) 0.275;
         }
 
-        public override double calcularDescontosSalario(double salarioBruto)
+        public override decimal calcularDescontosSalario(decimal salarioBruto)
         {
             // Calculo falso apenas para demonstração.
-            return salarioBruto * 0.09;
+            return salarioBruto * (decimal) 0.09;
         }
     }
 }
