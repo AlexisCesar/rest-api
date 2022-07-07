@@ -63,6 +63,7 @@ namespace Restful_API.Services.Services
 
             contratoInDatabase.Cargo = contratoToUpdate.Cargo;
             contratoInDatabase.SalarioBruto = contratoToUpdate.SalarioBruto;
+            contratoInDatabase.Termino = contratoToUpdate.Termino;
 
             _contratoRepository.UpdateContrato(contratoInDatabase);
             await _contratoRepository.SaveAsync();

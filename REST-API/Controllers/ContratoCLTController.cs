@@ -62,9 +62,14 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> UpdateContrato([FromRoute] Guid id, [FromBody] UpdateContratoCLTRequest objeto)
         {
-            if (await _contratoService.GetByIdAsync(id) == null) return NotFound();
+            var contrato = await _contratoService.GetByIdAsync(id);
+
+            if (contrato == null) return NotFound();
+
+            if (contrato.Termino != null) return Conflict();
 
             try
             {
