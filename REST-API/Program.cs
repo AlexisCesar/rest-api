@@ -24,6 +24,7 @@ builder.Services.AddScoped<IFuncionarioContratoRepository, FuncionarioContratoRe
 builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
 builder.Services.AddScoped<IContratoCLTService, ContratoCLTService>();
 builder.Services.AddScoped<IContratoPJService, ContratoPJService>();
+builder.Services.AddScoped<IFuncionarioContratoService, FuncionarioContratoService>();
 
 // Mapper
 var mappingConfig = new MapperConfiguration(cfg => cfg.AddProfile(new MappingProfile()));
