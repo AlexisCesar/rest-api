@@ -4,45 +4,73 @@ namespace Entidades.Models
 {
     public abstract class Contrato
     {
-        public Guid Id { get; set; }
-        public DateTime Inicio { get; set; }
-        private DateTime? _termino { get; set; }
-        public DateTime? Termino
+        public Contrato(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Funcionario funcionario)
         {
-            get => _termino;
-            set
-            {
-                if (value != null)
-                {
-                    if (value.GetValueOrDefault().Date < Inicio.Date)
-                    {
-                        throw new DomainValidationException("Data de término não pode ser menor do que início.");
-                    }
-                }
-                _termino = value;
-            }
+            this.Id = Guid.NewGuid();
+            this.Inicio = inicio;
+            SetTermino(termino);
+            SetSalarioBruto(salarioBruto);
+            SetCargo(cargo);
+            this.Funcionario = funcionario;
+
+            checarPropriedades();
         }
+
+        protected Contrato() {}
+
+        public Guid Id { get; private set; }
+        public DateTime Inicio { get; private set; }
+        public DateTime? Termino { get; private set; }
         public decimal SalarioLiquido { get; private set; }
-        private decimal _salarioBruto { get; set; }
-        public decimal SalarioBruto
-        {
-            get => _salarioBruto;
-            set
-            {
-                _salarioBruto = value;
-                SalarioLiquido = calcularSalarioLiquido(value);
-            }
-        }
-        public string? Cargo { get; set; }
-        public Funcionario Funcionario { get; set; } = null!;
+        public decimal SalarioBruto { get; private set; }
+        public string? Cargo { get; private set; }
+        public Funcionario Funcionario { get; private set; } = null!;
 
-        public decimal calcularSalarioLiquido(decimal salarioBruto)
+        public void SetSalarioBruto(decimal salarioBruto)
         {
-            return salarioBruto - calcularDescontosSalario(salarioBruto) + calcularBeneficiosSalario(salarioBruto);
+            var salarioLiquido = CalcularSalarioLiquido(salarioBruto);
+
+            validarSalario(salarioBruto, salarioLiquido);
+
+            this.SalarioBruto = salarioBruto;
+            this.SalarioLiquido = salarioLiquido;
         }
 
-        public abstract decimal calcularDescontosSalario(decimal salarioBruto);
+        public void SetCargo(string cargo)
+        {
+            this.Cargo = cargo;
+        }
 
-        public abstract decimal calcularBeneficiosSalario(decimal salarioBruto);
+        public void SetTermino(DateTime? termino)
+        {
+            validarInicioTermino(this.Inicio, termino);
+            this.Termino = termino;
+        }
+
+        public decimal CalcularSalarioLiquido(decimal salarioBruto)
+        {
+            return salarioBruto - CalcularDescontosSalario(salarioBruto) + CalcularBeneficiosSalario(salarioBruto);
+        }
+
+        public abstract decimal CalcularDescontosSalario(decimal salarioBruto);
+
+        public abstract decimal CalcularBeneficiosSalario(decimal salarioBruto);
+
+        private void validarInicioTermino(DateTime inicio, DateTime? termino)
+        {
+            if (termino != null)
+                if (termino.GetValueOrDefault().Date < inicio.Date) throw new DomainValidationException("Data de término não pode ser menor do que início.");
+        }
+
+        private void validarSalario(decimal salarioBruto, decimal salarioLiquido)
+        {
+            if (salarioBruto < 0 || salarioLiquido < 0) throw new DomainValidationException("Salário não pode ser negativo.");
+        }
+
+        private void checarPropriedades()
+        {
+            validarInicioTermino(this.Inicio, this.Termino);
+            validarSalario(this.SalarioBruto, this.SalarioLiquido);
+        }
     }
 }
