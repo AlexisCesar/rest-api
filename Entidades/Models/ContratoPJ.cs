@@ -2,18 +2,20 @@
 {
     public class ContratoPJ : Contrato
     {
-        public ContratoPJ()
+        public ContratoPJ(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Funcionario funcionario) : base(inicio, termino, salarioBruto, cargo, funcionario)
         {
 
         }
 
-        public override decimal calcularBeneficiosSalario(decimal salarioBruto)
+        private ContratoPJ() {}
+
+        public override decimal CalcularBeneficiosSalario(decimal salarioBruto)
         {
             // Calculo falso apenas para demonstração.
             return 0;
         }
 
-        public override decimal calcularDescontosSalario(decimal salarioBruto)
+        public override decimal CalcularDescontosSalario(decimal salarioBruto)
         {
             // Calculo falso apenas para demonstração.
             return salarioBruto * (decimal) 0.0466;

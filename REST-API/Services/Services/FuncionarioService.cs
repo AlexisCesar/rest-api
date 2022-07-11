@@ -42,9 +42,7 @@ namespace Restful_API.Services.Services
 
         public async Task<FuncionarioDTO> InsertAsync(CreateFuncionarioRequest funcionario)
         {
-            var funcionarioToInsert = _mapper.Map<Funcionario>(funcionario);
-
-            funcionarioToInsert.Id = Guid.NewGuid();
+            var funcionarioToInsert = new Funcionario(funcionario.Nome, funcionario.Email);
 
             await _funcionarioRepository.InsertFuncionarioAsync(funcionarioToInsert);
             await _funcionarioRepository.SaveAsync();
@@ -54,9 +52,10 @@ namespace Restful_API.Services.Services
 
         public async Task<FuncionarioDTO> UpdateAsync(UpdateFuncionarioRequest funcionario, Guid id)
         {
-            var funcionarioToUpdate = _mapper.Map<Funcionario>(funcionario);
+            var funcionarioToUpdate = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
 
-            funcionarioToUpdate.Id = id;
+            funcionarioToUpdate.SetNome(funcionario.Nome);
+            funcionarioToUpdate.SetEmail(funcionario.Email);
 
             _funcionarioRepository.UpdateFuncionario(funcionarioToUpdate);
             await _funcionarioRepository.SaveAsync();

@@ -9,10 +9,16 @@ namespace Restful_API.Services.Services
     public class ContratoCLTService : IContratoCLTService
     {
         private readonly IContratoCLTRepository _contratoRepository;
+        private readonly IFuncionarioService _funcionarioService;
         private readonly IMapper _mapper;
-        public ContratoCLTService(IContratoCLTRepository contratoRepository, IMapper mapper)
+        public ContratoCLTService(
+            IContratoCLTRepository contratoRepository, 
+            IFuncionarioService funcionarioService,
+            IMapper mapper
+            )
         {
             _contratoRepository = contratoRepository;
+            _funcionarioService = funcionarioService;
             _mapper = mapper;
         }
 
@@ -42,12 +48,13 @@ namespace Restful_API.Services.Services
 
         public async Task<ContratoCLTDTO> InsertAsync(CreateContratoCLTRequest contrato)
         {
-            var contratoToInsert = _mapper.Map<ContratoCLT>(contrato);
-
-            contratoToInsert.Id = Guid.NewGuid();
-            contratoToInsert.Inicio = DateTime.UtcNow;
-
-            contratoToInsert.Funcionario = new Funcionario() { Id = contrato.FuncionarioId };
+            var contratoToInsert = new ContratoCLT(
+                DateTime.UtcNow,
+                null,
+                contrato.SalarioBruto,
+                contrato.Cargo ?? "-",
+                _mapper.Map<Funcionario>(await _funcionarioService.GetByIdAsync(contrato.FuncionarioId))
+            );
 
             await _contratoRepository.InsertContratoAsync(contratoToInsert);
             await _contratoRepository.SaveAsync();
@@ -61,9 +68,9 @@ namespace Restful_API.Services.Services
 
             var contratoInDatabase = await _contratoRepository.GetContratoByIdAsync(id);
 
-            contratoInDatabase.Cargo = contratoToUpdate.Cargo;
-            contratoInDatabase.SalarioBruto = contratoToUpdate.SalarioBruto;
-            contratoInDatabase.Termino = contratoToUpdate.Termino;
+            contratoInDatabase.SetCargo(contratoToUpdate.Cargo ?? "-");
+            contratoInDatabase.SetSalarioBruto(contratoToUpdate.SalarioBruto);
+            contratoInDatabase.SetTermino(contratoToUpdate.Termino);
 
             _contratoRepository.UpdateContrato(contratoInDatabase);
             await _contratoRepository.SaveAsync();
