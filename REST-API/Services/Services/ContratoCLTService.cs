@@ -9,16 +9,13 @@ namespace Restful_API.Services.Services
     public class ContratoCLTService : IContratoCLTService
     {
         private readonly IContratoCLTRepository _contratoRepository;
-        private readonly IFuncionarioService _funcionarioService;
         private readonly IMapper _mapper;
         public ContratoCLTService(
             IContratoCLTRepository contratoRepository,
-            IFuncionarioService funcionarioService,
             IMapper mapper
             )
         {
             _contratoRepository = contratoRepository;
-            _funcionarioService = funcionarioService;
             _mapper = mapper;
         }
 
