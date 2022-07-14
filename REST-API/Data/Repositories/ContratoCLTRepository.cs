@@ -9,8 +9,7 @@ namespace Restful_API.Data
         Task<ContratoCLT> GetContratoByIdAsync(Guid contratoId);
         Task InsertContratoAsync(ContratoCLT contrato);
         Task DeleteContrato(Guid contratoId);
-        void UpdateContrato(ContratoCLT contrato);
-        Task SaveAsync();
+        Task UpdateContrato(ContratoCLT contrato);
     }
 
     public class ContratoCLTRepository : IContratoCLTRepository, IDisposable
@@ -25,32 +24,29 @@ namespace Restful_API.Data
         {
             ContratoCLT contrato = await GetContratoByIdAsync(contratoId);
             _context.ContratosCLT.Remove(contrato);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<ContratoCLT> GetContratoByIdAsync(Guid contratoId)
         {
-            return await _context.ContratosCLT.Include(nameof(Contrato.Funcionario)).AsNoTracking().FirstOrDefaultAsync(x => x.Id == contratoId);
+            return await _context.ContratosCLT.AsNoTracking().FirstOrDefaultAsync(x => x.Id == contratoId);
         }
 
         public async Task<IEnumerable<ContratoCLT>> GetContratosAsync()
         {
-            return await _context.ContratosCLT.Include(nameof(Contrato.Funcionario)).AsNoTracking().ToListAsync();
+            return await _context.ContratosCLT.AsNoTracking().ToListAsync();
         }
 
         public async Task InsertContratoAsync(ContratoCLT contrato)
         {
-            _context.Attach(contrato.Funcionario);
             await _context.ContratosCLT.AddAsync(contrato);
-        }
-
-        public async Task SaveAsync()
-        {
             await _context.SaveChangesAsync();
         }
 
-        public void UpdateContrato(ContratoCLT contrato)
+        public async Task UpdateContrato(ContratoCLT contrato)
         {
             _context.Entry(contrato).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
         private bool disposed = false;

@@ -4,19 +4,19 @@ namespace Entidades.Models
 {
     public abstract class Contrato
     {
-        public Contrato(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Funcionario funcionario)
+        public Contrato(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Guid funcionarioId)
         {
             this.Id = Guid.NewGuid();
             this.Inicio = inicio;
             SetTermino(termino);
             SetSalarioBruto(salarioBruto);
             SetCargo(cargo);
-            this.Funcionario = funcionario;
+            this.FuncionarioId = funcionarioId;
 
             checarPropriedades();
         }
 
-        protected Contrato() {}
+        protected Contrato() { }
 
         public Guid Id { get; private set; }
         public DateTime Inicio { get; private set; }
@@ -24,7 +24,12 @@ namespace Entidades.Models
         public decimal SalarioLiquido { get; private set; }
         public decimal SalarioBruto { get; private set; }
         public string? Cargo { get; private set; }
-        public Funcionario Funcionario { get; private set; } = null!;
+        public Guid FuncionarioId { get; private set; }
+
+        public void SetFuncionarioId(Guid id)
+        {
+            this.FuncionarioId = id;
+        }
 
         public void SetSalarioBruto(decimal salarioBruto)
         {

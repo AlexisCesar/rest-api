@@ -2,7 +2,7 @@
 {
     public class ContratoCLT : Contrato
     {
-        public ContratoCLT(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Funcionario funcionario) : base(inicio, termino, salarioBruto, cargo, funcionario)
+        public ContratoCLT(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Guid funcionarioId) : base(inicio, termino, salarioBruto, cargo, funcionarioId)
         {
             
         }

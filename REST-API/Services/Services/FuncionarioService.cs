@@ -19,7 +19,6 @@ namespace Restful_API.Services.Services
         public async Task DeleteAsync(Guid id)
         {
             await _funcionarioRepository.DeleteFuncionario(id);
-            await _funcionarioRepository.SaveAsync();
         }
 
         public async Task<List<FuncionarioDTO>> GetAllAsync()
@@ -45,7 +44,6 @@ namespace Restful_API.Services.Services
             var funcionarioToInsert = new Funcionario(funcionario.Nome, funcionario.Email);
 
             await _funcionarioRepository.InsertFuncionarioAsync(funcionarioToInsert);
-            await _funcionarioRepository.SaveAsync();
 
             return _mapper.Map<FuncionarioDTO>(funcionarioToInsert);
         }
@@ -57,8 +55,7 @@ namespace Restful_API.Services.Services
             funcionarioToUpdate.SetNome(funcionario.Nome);
             funcionarioToUpdate.SetEmail(funcionario.Email);
 
-            _funcionarioRepository.UpdateFuncionario(funcionarioToUpdate);
-            await _funcionarioRepository.SaveAsync();
+            await _funcionarioRepository.UpdateFuncionario(funcionarioToUpdate);
 
             return _mapper.Map<FuncionarioDTO>(funcionarioToUpdate);
         }

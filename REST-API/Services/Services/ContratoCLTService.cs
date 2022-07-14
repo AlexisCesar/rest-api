@@ -12,7 +12,7 @@ namespace Restful_API.Services.Services
         private readonly IFuncionarioService _funcionarioService;
         private readonly IMapper _mapper;
         public ContratoCLTService(
-            IContratoCLTRepository contratoRepository, 
+            IContratoCLTRepository contratoRepository,
             IFuncionarioService funcionarioService,
             IMapper mapper
             )
@@ -25,7 +25,6 @@ namespace Restful_API.Services.Services
         public async Task DeleteAsync(Guid id)
         {
             await _contratoRepository.DeleteContrato(id);
-            await _contratoRepository.SaveAsync();
         }
 
         public async Task<List<ContratoCLTDTO>> GetAllAsync()
@@ -53,11 +52,10 @@ namespace Restful_API.Services.Services
                 null,
                 contrato.SalarioBruto,
                 contrato.Cargo ?? "-",
-                _mapper.Map<Funcionario>(await _funcionarioService.GetByIdAsync(contrato.FuncionarioId))
-            );
+                contrato.FuncionarioId
+                );
 
             await _contratoRepository.InsertContratoAsync(contratoToInsert);
-            await _contratoRepository.SaveAsync();
 
             return _mapper.Map<ContratoCLTDTO>(contratoToInsert);
         }
@@ -72,8 +70,7 @@ namespace Restful_API.Services.Services
             contratoInDatabase.SetSalarioBruto(contratoToUpdate.SalarioBruto);
             contratoInDatabase.SetTermino(contratoToUpdate.Termino);
 
-            _contratoRepository.UpdateContrato(contratoInDatabase);
-            await _contratoRepository.SaveAsync();
+            await _contratoRepository.UpdateContrato(contratoInDatabase);
 
             return _mapper.Map<ContratoCLTDTO>(contratoInDatabase);
         }

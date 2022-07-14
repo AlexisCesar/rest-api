@@ -2,7 +2,7 @@
 {
     public class ContratoPJ : Contrato
     {
-        public ContratoPJ(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Funcionario funcionario) : base(inicio, termino, salarioBruto, cargo, funcionario)
+        public ContratoPJ(DateTime inicio, DateTime? termino, decimal salarioBruto, string cargo, Guid funcionarioId) : base(inicio, termino, salarioBruto, cargo, funcionarioId)
         {
 
         }

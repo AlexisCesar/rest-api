@@ -12,20 +12,12 @@ namespace Restful_API.Mappings
             CreateMap<CreateFuncionarioRequest, Funcionario>().ReverseMap();
             CreateMap<UpdateFuncionarioRequest, Funcionario>().ReverseMap();
 
-            CreateMap<ContratoCLT, ContratoCLTDTO>()
-            .ForMember(dest => dest.FuncionarioId, map =>
-                    map.MapFrom(src => src.Funcionario.Id))
-            .ReverseMap();
-
+            CreateMap<ContratoCLT, ContratoCLTDTO>().ReverseMap();
             CreateMap<CreateContratoCLTRequest, ContratoCLT>().ReverseMap();
             CreateMap<UpdateContratoCLTRequest, ContratoCLT>().ReverseMap();
             CreateMap<ContratoCLTDTO, UpdateContratoCLTRequest>().ReverseMap();
 
-            CreateMap<ContratoPJ, ContratoPJDTO>()
-            .ForMember(dest => dest.FuncionarioId, map =>
-                    map.MapFrom(src => src.Funcionario.Id))
-            .ReverseMap();
-
+            CreateMap<ContratoPJ, ContratoPJDTO>().ReverseMap();
             CreateMap<CreateContratoPJRequest, ContratoPJ>().ReverseMap();
             CreateMap<UpdateContratoPJRequest, ContratoPJ>().ReverseMap();
             CreateMap<ContratoPJDTO, UpdateContratoPJRequest>().ReverseMap();

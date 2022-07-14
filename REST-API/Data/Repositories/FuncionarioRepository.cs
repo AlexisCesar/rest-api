@@ -9,8 +9,7 @@ namespace Restful_API.Data
         Task<Funcionario> GetFuncionarioByIdAsync(Guid funcionarioId);
         Task InsertFuncionarioAsync(Funcionario funcionario);
         Task DeleteFuncionario(Guid funcionarioId);
-        void UpdateFuncionario(Funcionario funcionario);
-        Task SaveAsync();
+        Task UpdateFuncionario(Funcionario funcionario);
     }
 
     public class FuncionarioRepository : IFuncionarioRepository, IDisposable
@@ -25,6 +24,7 @@ namespace Restful_API.Data
         {
             Funcionario funcionario = await GetFuncionarioByIdAsync(funcionarioId);
             _context.Funcionarios.Remove(funcionario);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Funcionario> GetFuncionarioByIdAsync(Guid funcionarioId)
@@ -40,16 +40,13 @@ namespace Restful_API.Data
         public async Task InsertFuncionarioAsync(Funcionario funcionario)
         {
             await _context.Funcionarios.AddAsync(funcionario);
-        }
-
-        public async Task SaveAsync()
-        {
             await _context.SaveChangesAsync();
         }
 
-        public void UpdateFuncionario(Funcionario funcionario)
+        public async Task UpdateFuncionario(Funcionario funcionario)
         {
             _context.Entry(funcionario).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
 
         private bool disposed = false;
