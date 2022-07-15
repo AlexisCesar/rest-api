@@ -29,12 +29,12 @@ namespace Restful_API.Data
 
         public async Task<ContratoCLT> GetContratoByIdAsync(Guid contratoId)
         {
-            return await _context.ContratosCLT.AsNoTracking().FirstOrDefaultAsync(x => x.Id == contratoId);
+            return await _context.ContratosCLT.Include(nameof(Contrato.Funcionario)).AsNoTracking().FirstOrDefaultAsync(x => x.Id == contratoId);
         }
 
         public async Task<IEnumerable<ContratoCLT>> GetContratosAsync()
         {
-            return await _context.ContratosCLT.AsNoTracking().ToListAsync();
+            return await _context.ContratosCLT.Include(nameof(Contrato.Funcionario)).AsNoTracking().ToListAsync();
         }
 
         public async Task InsertContratoAsync(ContratoCLT contrato)

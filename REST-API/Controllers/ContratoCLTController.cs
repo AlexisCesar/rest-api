@@ -76,8 +76,9 @@ namespace Restful_API.Controllers
                 var response = await _contratoService.UpdateAsync(objeto, id);
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

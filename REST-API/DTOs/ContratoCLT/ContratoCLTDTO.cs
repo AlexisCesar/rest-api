@@ -1,6 +1,6 @@
-namespace Restful_API.DTOs 
+namespace Restful_API.DTOs
 {
-    public class ContratoCLTDTO 
+    public class ContratoCLTDTO
     {
         public Guid Id { get; set; }
         public DateTime Inicio { get; set; }
@@ -8,6 +8,6 @@ namespace Restful_API.DTOs
         public decimal SalarioBruto { get; set; }
         public decimal SalarioLiquido { get; set; }
         public string? Cargo { get; set; }
-        public Guid FuncionarioId { get; set; }
+        public FuncionarioDTO? Funcionario { get; set; }
     }
 }
