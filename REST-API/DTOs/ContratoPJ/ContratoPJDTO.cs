@@ -8,6 +8,6 @@ namespace Restful_API.DTOs
         public decimal SalarioBruto { get; set; }
         public decimal SalarioLiquido { get; set; }
         public string? Cargo { get; set; }
-        public Guid FuncionarioId { get; set; }
+        public FuncionarioDTO? Funcionario { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Entidades.Models.Exceptions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Entidades.Models.Exceptions;
 
 namespace Entidades.Models
 {
@@ -11,7 +12,8 @@ namespace Entidades.Models
             SetTermino(termino);
             SetSalarioBruto(salarioBruto);
             SetCargo(cargo);
-            this.FuncionarioId = funcionarioId;
+            SetFuncionarioId(funcionarioId);
+            this.Funcionario = null;
 
             checarPropriedades();
         }
@@ -25,6 +27,8 @@ namespace Entidades.Models
         public decimal SalarioBruto { get; private set; }
         public string? Cargo { get; private set; }
         public Guid FuncionarioId { get; private set; }
+        [ForeignKey("FuncionarioId")]
+        public Funcionario? Funcionario { get; private set; }
 
         public void SetFuncionarioId(Guid id)
         {
