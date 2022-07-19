@@ -6,7 +6,7 @@ namespace Restful_API.Services.Interfaces
     {
         Task<List<ContratoCLTDTO>> GetAllAsync();
         Task<ContratoCLTDTO> GetByIdAsync(Guid id);
-        Task<ContratoCLTDTO> InsertAsync(CreateContratoCLTRequest contrato);
+        Task<ContratoCLTDTO?> InsertAsync(CreateContratoCLTRequest contrato);
         Task DeleteAsync(Guid id);
         Task<ContratoCLTDTO> UpdateAsync(UpdateContratoCLTRequest contrato, Guid id);
     }
