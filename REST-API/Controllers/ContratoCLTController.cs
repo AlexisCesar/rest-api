@@ -47,6 +47,8 @@ namespace Restful_API.Controllers
             try
             {
                 var response = await _contratoService.InsertAsync(objeto);
+                if (response == null) return NotFound("Funcionario não encontrado");
+
                 return Created($"api/v1/contratosCLT/{response.Id}", response);
             }
             catch (Exception e)

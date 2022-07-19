@@ -9,13 +9,16 @@ namespace Restful_API.Services.Services
     public class ContratoCLTService : IContratoCLTService
     {
         private readonly IContratoCLTRepository _contratoRepository;
+        private readonly IFuncionarioService _funcionarioService;
         private readonly IMapper _mapper;
         public ContratoCLTService(
             IContratoCLTRepository contratoRepository,
+            IFuncionarioService funcionarioService,
             IMapper mapper
             )
         {
             _contratoRepository = contratoRepository;
+            _funcionarioService = funcionarioService;
             _mapper = mapper;
         }
 
@@ -44,6 +47,8 @@ namespace Restful_API.Services.Services
 
         public async Task<ContratoCLTDTO> InsertAsync(CreateContratoCLTRequest contrato)
         {
+            if (!await VerificarSeFuncionarioExiste(contrato.FuncionarioId)) return null;
+
             var contratoToInsert = new ContratoCLT(
                 DateTime.UtcNow,
                 null,
@@ -55,6 +60,13 @@ namespace Restful_API.Services.Services
             await _contratoRepository.InsertContratoAsync(contratoToInsert);
 
             return _mapper.Map<ContratoCLTDTO>(contratoToInsert);
+        }
+
+        private async Task<bool> VerificarSeFuncionarioExiste(Guid funcionarioId)
+        {
+            var funcionario = await _funcionarioService.GetByIdAsync(funcionarioId);
+
+            return funcionario == null ? false : true;
         }
 
         public async Task<ContratoCLTDTO> UpdateAsync(UpdateContratoCLTRequest contrato, Guid id)
