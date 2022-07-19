@@ -45,7 +45,7 @@ namespace Restful_API.Services.Services
             return contratoDTO;
         }
 
-        public async Task<ContratoCLTDTO> InsertAsync(CreateContratoCLTRequest contrato)
+        public async Task<ContratoCLTDTO?> InsertAsync(CreateContratoCLTRequest contrato)
         {
             if (!await VerificarSeFuncionarioExiste(contrato.FuncionarioId)) return null;
 
