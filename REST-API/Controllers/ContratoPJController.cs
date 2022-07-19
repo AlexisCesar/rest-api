@@ -47,6 +47,8 @@ namespace Restful_API.Controllers
             try
             {
                 var response = await _contratoService.InsertAsync(objeto);
+                if (response == null) return NotFound("Funcionario não encontrado");
+
                 return Created($"api/v1/contratosPJ/{response.Id}", response);
             }
             catch (Exception e)
@@ -76,8 +78,9 @@ namespace Restful_API.Controllers
                 var response = await _contratoService.UpdateAsync(objeto, id);
                 return Ok(response);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
