@@ -131,7 +131,7 @@ namespace Testes.Rest_API.Services
             Assert.NotEqual(Guid.Empty, resposta.Id);
             Assert.Equal(createRequest.Cargo, resposta.Cargo);
             Assert.Equal(createRequest.SalarioBruto, resposta.SalarioBruto);
-            Assert.NotNull(resposta.Inicio);
+            Assert.NotEqual(DateTime.MinValue, resposta.Inicio);
         }
 
         [Fact]
@@ -149,7 +149,8 @@ namespace Testes.Rest_API.Services
                     Guid.NewGuid()
                 );
 
-            var updateRequest = new UpdateContratoPJRequest() {
+            var updateRequest = new UpdateContratoPJRequest()
+            {
                 Cargo = "Designer",
                 SalarioBruto = 5000,
                 Termino = null
