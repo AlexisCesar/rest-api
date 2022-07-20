@@ -15,7 +15,7 @@ Alguns conceitos e padrões foram requisitados na proposta do projeto:
 ▶ POO - Herança, Polimorfismo e Encapsulamento
 ▶ Design Pattern - Template Method
 
-### Para rodar o projeto
+### Para rodar o projeto 💻
 É necessário estar na pasta raíz da API (\REST-API) e primeiramente preparar o banco de dados com o comando:
 ```
 dotnet ef database update
@@ -23,6 +23,11 @@ dotnet ef database update
 Em seguida rodar a api com:
 ```
 dotnet run
+```
+
+### Para rodar os testes 🧪👨‍🔬
+```
+dotnet test
 ```
 
 ### Endpoints
