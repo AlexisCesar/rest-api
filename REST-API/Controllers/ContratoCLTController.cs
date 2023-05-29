@@ -11,18 +11,35 @@ namespace Restful_API.Controllers
     {
         private readonly IContratoCLTService _contratoService;
         private readonly IMapper _mapper;
-        public ContratoCLTController(IContratoCLTService contratoService, IMapper mapper)
+        private readonly ILogger<ContratoCLTController> _logger;
+
+        public ContratoCLTController(IContratoCLTService contratoService, IMapper mapper, ILogger<ContratoCLTController> logger)
         {
             _contratoService = contratoService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ContratoCLTDTO>))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetContratos()
         {
-            var contratosCLT = await _contratoService.GetAllAsync();
+            _logger.LogInformation("Buscando todos contratos CLT.");
+
+            List<ContratoCLTDTO> contratosCLT;
+
+            try
+            {
+                contratosCLT = await _contratoService.GetAllAsync();
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Um erro inesperado ocorreu ao recuperar os contratos.");
+            }
+
+            _logger.LogInformation($"{contratosCLT.Count} contratos encontrados.");
 
             return contratosCLT.Count() == 0 ? NoContent() : Ok(contratosCLT);
         }
