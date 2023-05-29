@@ -33,6 +33,8 @@ IMapper mapper = mappingConfig.CreateMapper();
 
 builder.Services.AddSingleton(mapper);
 
+builder.Logging.AddLog4Net();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

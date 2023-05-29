@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 using Restful_API.DTOs;
 using Restful_API.Services.Interfaces;
@@ -11,13 +12,12 @@ namespace Restful_API.Controllers
     {
         private readonly IContratoCLTService _contratoService;
         private readonly IMapper _mapper;
-        private readonly ILogger<ContratoCLTController> _logger;
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(ContratoCLTController));
 
-        public ContratoCLTController(IContratoCLTService contratoService, IMapper mapper, ILogger<ContratoCLTController> logger)
+        public ContratoCLTController(IContratoCLTService contratoService, IMapper mapper)
         {
             _contratoService = contratoService;
             _mapper = mapper;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -26,7 +26,7 @@ namespace Restful_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetContratos()
         {
-            _logger.LogInformation("Buscando todos contratos CLT.");
+            _logger.Info("Buscando todos contratos CLT.");
 
             List<ContratoCLTDTO> contratosCLT;
 
@@ -35,11 +35,11 @@ namespace Restful_API.Controllers
                 contratosCLT = await _contratoService.GetAllAsync();
             } catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.Error(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Um erro inesperado ocorreu ao recuperar os contratos.");
             }
 
-            _logger.LogInformation($"{contratosCLT.Count} contratos encontrados.");
+            _logger.Info($"{contratosCLT.Count} contratos encontrados.");
 
             return contratosCLT.Count() == 0 ? NoContent() : Ok(contratosCLT);
         }
